@@ -27,10 +27,10 @@ jobs:
       uses: subosito/flutter-action@v2
       with:
         flutter-version: '3.19.0'
-
+        
     - name: Flet Build APK
       run: |
-        flet build apk ./src --project-name memory_master --product-name "Memory Master"
+          flet build apk ./src
 
     - name: Upload APK
       uses: actions/upload-artifact@v4 # KLUCZOWA ZMIANA: Zmieniono z v3 na v4
