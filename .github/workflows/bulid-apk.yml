@@ -11,10 +11,10 @@ jobs:
 
     steps:
     - name: Checkout code
-      uses: actions/checkout@v3
+      uses: actions/checkout@v4  # Zmieniono z v3 na v4
 
     - name: Setup Python
-      uses: actions/setup-python@v4
+      uses: actions/setup-python@v5 # Zmieniono z v4 na v5
       with:
         python-version: '3.11'
 
@@ -26,16 +26,14 @@ jobs:
     - name: Setup Flutter
       uses: subosito/flutter-action@v2
       with:
-        flutter-version: '3.19.0' # Wersja stabilna
+        flutter-version: '3.19.0'
 
     - name: Flet Build APK
       run: |
-        # Komenda budująca. Wskazujemy folder src jako źródło aplikacji
         flet build apk ./src --project-name memory_master --product-name "Memory Master"
 
     - name: Upload APK
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4 # KLUCZOWA ZMIANA: Zmieniono z v3 na v4
       with:
         name: memory-master-apk
-        # Ścieżka, gdzie Flet wyrzuca gotowy plik (zazwyczaj build/app/outputs/flutter-apk/)
         path: build/app/outputs/flutter-apk/app-release.apk
