@@ -1,6 +1,7 @@
 import flet as ft
 from views.home import HomeView
 from views.pi_page import PiPageView
+from views.pao import PaoPageView
 
 
 def main(page: ft.Page):
@@ -16,6 +17,8 @@ def main(page: ft.Page):
 
         if route == "/pi":
             page.views.append(PiPageView(page))
+        elif route == "/pao":
+            page.views.append(PaoPageView(page))
         else:
             page.views.append(HomeView(page))
 
