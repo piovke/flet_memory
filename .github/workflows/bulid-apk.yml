@@ -13,7 +13,6 @@ jobs:
     - name: Checkout code
       uses: actions/checkout@v4
 
-    # Nowy krok: Instalacja Javy (niezbędna dla Androida)
     - name: Setup Java
       uses: actions/setup-java@v4
       with:
@@ -30,15 +29,20 @@ jobs:
         python -m pip install --upgrade pip
         pip install -r requirements.txt
 
-    # Usunęliśmy "Setup Flutter" - Flet zrobi to sam.
-
     - name: Flet Build APK
+      # "yes |" wciska "y" za każdym razem gdy instalator o coś pyta
       run: |
-        # "yes |" automatycznie odpowiada "y" na pytanie o instalację SDK
         yes | flet build apk ./src
+
+    # --- NOWY KROK DIAGNOSTYCZNY ---
+    # Pokaże nam w logach, gdzie dokładnie jest plik (jeśli się zbudował)
+    - name: Find APK path (Debug)
+      run: find . -name "*.apk"
 
     - name: Upload APK
       uses: actions/upload-artifact@v4
       with:
         name: memory-master-apk
-        path: build/app/outputs/flutter-apk/app-release.apk
+        # --- KLUCZOWA ZMIANA ---
+        # Szukamy pliku .apk w całym projekcie, zamiast podawać sztywną ścieżkę
+        path: "**/*.apk"
