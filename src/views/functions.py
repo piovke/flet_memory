@@ -1,44 +1,55 @@
 import json
-from pathlib import Path
 
-CURRENT_DIR = Path(__file__).parent
-ROOT_DIR = CURRENT_DIR.parent.parent
-STORAGE_DIR = ROOT_DIR / "storage"
+GROUPS_KEY = "memory_groups_v1"
+PAO_KEY = "memory_pao_v1"
 
-GROUPS_FILE = STORAGE_DIR / "groups.json"
-PAO_FILE = STORAGE_DIR / "pao.json"
+def load_data(page, key):
+    """
+    Uniwersalna funkcja ładowania danych.
+    Próbuje pobrać z:
+    1. Bazy telefonu/przeglądarki (Client Storage)
+    2. Pliku lokalnego JSON (Komputer)
+    """
 
-
-def load_groups():
-    if not GROUPS_FILE.exists():
-        return {}
+    # 1. Próba: Client Storage (Telefon/Web)
     try:
-        with open(GROUPS_FILE, "r", encoding="utf-8") as f:
-            return json.load(f)
+        # Sprawdzamy czy page ma ten atrybut (hasattr) i czy nie jest None
+        if hasattr(page, 'client_storage') and page.client_storage:
+            if page.client_storage.contains_key(key):
+                return page.client_storage.get(key)
     except Exception as e:
-        print(f"Błąd ładowania groups.json: {e}")
-        return {}
+        print(f"Info: Client storage niedostępne ({e})")
 
-def load_pao():
-    if not PAO_FILE.exists():
-        return {}
+    # 2. Próba: Plik lokalny (PC)
+    # To zadziała na Windowsie, gdzie client_storage robi problemy
     try:
-        with open(PAO_FILE, "r", encoding="utf-8") as f:
-            return json.load(f)
-    except Exception as e:
-        print(f"Błąd ładowania pao.json: {e}")
-        return {}
+        filename = f"{key}.json"
+        if os.path.exists(filename):
+            with open(filename, "r", encoding="utf-8") as f:
+                return json.load(f)
+    except Exception:
+        pass
 
-def save_groups(data):
+    # Jeśli nic nie znaleziono, zwracamy pusty słownik
+    return {}
+
+
+def save_data(page, key, data):
+    """
+    Uniwersalna funkcja zapisywania danych.
+    """
+
+    # 1. Zapis: Client Storage (Telefon/Web)
     try:
-        with open(GROUPS_FILE, "w", encoding="utf-8") as f:
+        if hasattr(page, 'client_storage') and page.client_storage:
+            page.client_storage.set(key, data)
+    except Exception:
+        pass
+
+    # 2. Zapis: Plik lokalny (PC - Kopia zapasowa)
+    try:
+        filename = f"{key}.json"
+        with open(filename, "w", encoding="utf-8") as f:
             json.dump(data, f, ensure_ascii=False, indent=4)
-    except Exception as e:
-        print(f"Błąd zapisu JSON: {e}")
-
-def save_pao(data):
-    try:
-        with open(PAO_FILE, "w", encoding="utf-8") as f:
-            json.dump(data, f, ensure_ascii=False, indent=4)
-    except Exception as e:
-        print(f"Błąd zapisu JSON: {e}")
+    except Exception:
+        pass
