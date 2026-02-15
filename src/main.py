@@ -11,6 +11,14 @@ def main(page: ft.Page):
     page.window.resizable = False
     page.theme_mode = ft.ThemeMode.DARK
 
+    # obsługa wstecz na telefonie
+    def view_pop(view):
+        page.views.pop()
+        top_view = page.views[-1]
+        page.go(top_view.route)
+
+    page.on_view_pop = view_pop
+
     def route_change(e):
         route = e.route if hasattr(e, "route") else e
         page.views.clear()
