@@ -91,10 +91,10 @@ def PiPageView(page):
 
                 btn_content = ft.Column([
                     ft.Row([
-                        ft.Text(digits_display, size=16, weight=ft.FontWeight.BOLD, color=ft.Colors.GREY_500,)
+                        ft.Text(digits_display, size=16, weight=ft.FontWeight.BOLD, color=ft.colors.GREY_500,)
                     ], alignment=ft.MainAxisAlignment.CENTER, height=18),
                     # ft.Row([
-                    ft.Text(words_display, size=18, color=ft.Colors.BLUE_800, text_align=ft.TextAlign.CENTER)
+                    ft.Text(words_display, size=18, color=ft.colors.BLUE_800, text_align=ft.TextAlign.CENTER)
                     # ], height=62)
                 ])
 
@@ -109,7 +109,7 @@ def PiPageView(page):
                 height=btn_height,
                 style=ft.ButtonStyle(
                     shape=ft.RoundedRectangleBorder(radius=10),
-                    side=ft.BorderSide(2, ft.Colors.GREEN if is_described else ft.Colors.GREY_500),
+                    side=ft.BorderSide(2, ft.colors.GREEN if is_described else ft.colors.GREY_500),
                     padding=8,
                 ),
                 on_click=lambda e, idx=i, ch=chunk: open_edit_dialog(index=idx, chunk_digits=ch)

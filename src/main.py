@@ -2,13 +2,14 @@ import flet as ft
 from views.home import HomeView
 from views.pi_page import PiPageView
 from views.pao import PaoPageView
+from views.eximport import ExImportView
 
 
 def main(page: ft.Page):
     page.title = "Memory Master"
-    page.window.width = 350
-    page.window.height = 730
-    page.window.resizable = False
+    page.window_width = 350
+    page.window_height = 700
+    page.window_resizable = False
     page.theme_mode = ft.ThemeMode.DARK
 
     # obsługa wstecz na telefonie
@@ -27,6 +28,8 @@ def main(page: ft.Page):
             page.views.append(PiPageView(page))
         elif route == "/pao":
             page.views.append(PaoPageView(page))
+        elif route == "/eximport":
+            page.views.append(ExImportView(page))
         else:
             page.views.append(HomeView(page))
 
@@ -45,4 +48,4 @@ def main(page: ft.Page):
 
 
 if __name__ == "__main__":
-    ft.run(main)
+    ft.app(target=main)
