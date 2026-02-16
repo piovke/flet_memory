@@ -35,8 +35,6 @@ def PaoPageView(page):
         page.snack_bar = ft.SnackBar(ft.Text("Wszystkie dane zostały usunięte!"), bgcolor="red")
         page.snack_bar.open = True
         page.update()
-
-
     # delete_all_data()
 
     pao_data = load_data(page, PAO_KEY)
@@ -135,7 +133,10 @@ def PaoPageView(page):
             page.update()
 
         def save_click(e):
-            add_pao(page, pair, list(category_selector.selected)[0], word_text.value)
+            add_pao(page, pair_text.value, list(category_selector.selected)[0], word_text.value)
+            #update
+            nonlocal pao_data
+            pao_data = load_data(page, PAO_KEY)
             close_dlg(e)
 
         category_selector = ft.SegmentedButton(
@@ -193,7 +194,6 @@ def PaoPageView(page):
                 btn = ft.OutlinedButton(
                     content=ft.Text(val, size=20),
                     height=35,
-                    # Lambda z domknięciem zmiennej
                     on_click=lambda e, pair=val: open_bottom_sheet(pair),
                     width=80
                 )
