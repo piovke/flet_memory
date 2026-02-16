@@ -38,13 +38,13 @@ def PiPageView(page):
             add_pao(page, str(chunk_digits[2:4]), "A", txt_a.value)
             add_pao(page, str(chunk_digits[4:6]), "O", txt_o.value)
 
+            render_list(run_update=True)
             close_dlg(e)
 
         dlg = ft.AlertDialog(
             modal=True,
             title=ft.Text(rf"Group {index}:   {chunk_digits}"),
             content=ft.Column([
-                ft.Text(f"Cyfry: {chunk_digits}"),
                 txt_p,
                 txt_a,
                 txt_o
@@ -88,7 +88,7 @@ def PiPageView(page):
                         ft.Text(digits_display, size=16, weight=ft.FontWeight.BOLD, color=ft.colors.GREY_500,)
                     ], alignment=ft.MainAxisAlignment.CENTER, height=18),
                     # ft.Row([
-                    ft.Text(words_display, size=18, color=ft.colors.BLUE_800, text_align=ft.TextAlign.CENTER)
+                    ft.Text(words_display, size=20, color=ft.colors.BLUE_800, text_align=ft.TextAlign.CENTER)
                     # ], height=62)
                 ])
 
