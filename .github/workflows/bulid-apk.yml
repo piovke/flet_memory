@@ -13,11 +13,18 @@ jobs:
     - name: Checkout code
       uses: actions/checkout@v4
 
+    # 1. Instalacja Javy (niezbędna dla Androida)
     - name: Setup Java
       uses: actions/setup-java@v4
       with:
         distribution: 'temurin'
         java-version: '17'
+
+    # 2. Instalacja Fluttera (Dla Flet 0.21.2 jest wymagany osobno)
+    - name: Setup Flutter
+      uses: subosito/flutter-action@v2
+      with:
+        flutter-version: '3.19.0'
 
     - name: Setup Python
       uses: actions/setup-python@v5
@@ -28,21 +35,22 @@ jobs:
       run: |
         python -m pip install --upgrade pip
         pip install -r requirements.txt
+        # Instalujemy flet ponownie dla pewności, w wersji zgodnej z requirements
+        pip install flet==0.21.2
 
     - name: Flet Build APK
-      # "yes |" wciska "y" za każdym razem gdy instalator o coś pyta
       run: |
-        yes | flet build apk ./src
+        # Budujemy aplikację z folderu src
+        flet build apk ./src
 
-    # --- NOWY KROK DIAGNOSTYCZNY ---
-    # Pokaże nam w logach, gdzie dokładnie jest plik (jeśli się zbudował)
-    - name: Find APK path (Debug)
+    # --- KROK DIAGNOSTYCZNY ---
+    # Pokaże w logach, gdzie dokładnie wylądował plik
+    - name: Debug - Find APK files
       run: find . -name "*.apk"
 
     - name: Upload APK
       uses: actions/upload-artifact@v4
       with:
         name: memory-master-apk
-        # --- KLUCZOWA ZMIANA ---
-        # Szukamy pliku .apk w całym projekcie, zamiast podawać sztywną ścieżkę
+        # KLUCZOWA ZMIANA: Szukamy pliku wszędzie
         path: "**/*.apk"
