@@ -19,6 +19,22 @@ def add_pao(page, digit_pair, pao, text):
         data[digit_pair][pao].append(text)
         save_data(page, PAO_KEY, data)
 
+def delete_pao(page, digit_pair, pao, word_to_delete):
+    if not digit_pair or len(digit_pair)!=2:
+        return
+
+    data = load_data(page, PAO_KEY)
+
+    if digit_pair not in data:
+        return
+
+    category_list = data[digit_pair].get(pao, [])
+    if word_to_delete in category_list:
+        category_list.remove(word_to_delete)
+        data[digit_pair][pao] = category_list
+        save_data(page, PAO_KEY, data)
+
+
 # funkcje próbują  client_storage(android) i  json (windows)
 def load_data(page, key):
     try:

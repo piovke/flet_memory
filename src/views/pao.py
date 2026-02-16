@@ -55,22 +55,28 @@ def PaoPageView(page):
                 ft.OutlinedButton(
                     person,
                     style=ft.ButtonStyle(
-                        padding=8
-                    )                ),            )
+                        padding=8,
+                    ),
+                on_click=lambda e, word=person,digit_pair=key: delete_pao_word_dialog(word_to_delete=word, pao="P", pair=digit_pair)
+                ),            )
         for action in data.get("A", []):
             list_a.controls.append(
                 ft.OutlinedButton(
                     action,
                     style=ft.ButtonStyle(
                         padding=8
-                    )                ),            )
+                    ) ,
+                on_click=lambda e, word=action,digit_pair=key: delete_pao_word_dialog(word_to_delete=word, pao="A", pair=digit_pair)
+                ),            )
         for obj in data.get("O", []):
             list_o.controls.append(
                 ft.OutlinedButton(
                     obj,
                     style=ft.ButtonStyle(
                         padding=8
-                    )                ),            )
+                    ),
+                on_click=lambda e, word=obj,digit_pair=key: delete_pao_word_dialog(word_to_delete=word, pao="O", pair=digit_pair)
+                ),            )
 
         def close_bs(e):
             bs.open = False
@@ -184,6 +190,55 @@ def PaoPageView(page):
         page.overlay.append(dlg)
         dlg.open = True
         page.update()
+
+    def delete_pao_word_dialog(pair, pao, word_to_delete):
+        def close_dlg(e):
+            dlg.open = False
+            page.update()
+
+        def confirm_delete(e):
+            delete_pao(page, pair, pao, word_to_delete)
+            #update
+            nonlocal pao_data
+            pao_data = load_data(page, PAO_KEY)
+            close_dlg(e)
+
+        pao_string = "Action" if pao =="A" else "Person" if pao =="P" else "Object"
+
+        dlg = ft.AlertDialog(
+            modal=True,
+            title=ft.Row(
+                controls=[
+                    ft.Text("Delete word?"),
+                    ft.Text(rf"{pair}", weight=ft.FontWeight.BOLD, size=32)
+                ], alignment=ft.MainAxisAlignment.SPACE_BETWEEN
+            ),
+            content=ft.Column([
+                ft.Row(
+                    controls=[
+                        ft.Text(f"{word_to_delete}", size=24, weight=ft.FontWeight.W_600)
+                    ],
+                    alignment=ft.MainAxisAlignment.CENTER,expand=True),
+                ft.Row(
+                    controls=[
+                        ft.Text(f"({pao_string})")
+                    ],
+                    alignment=ft.MainAxisAlignment.CENTER, expand=True),
+            ], height=80, tight=True),
+            actions=[
+                ft.Row(
+                    controls=[
+                        ft.TextButton("Anuluj", on_click=close_dlg),
+                        ft.FilledButton("Usuń", on_click=confirm_delete)
+                    ],
+                    alignment=ft.MainAxisAlignment.SPACE_BETWEEN
+                ),
+            ],
+        )
+        page.overlay.append(dlg)
+        dlg.open = True
+        page.update()
+
 
     def create_button_list():
         for i in range(0, 100, 4):
