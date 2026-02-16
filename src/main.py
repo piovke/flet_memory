@@ -15,10 +15,11 @@ def main(page: ft.Page):
     # obsługa wstecz na telefonie
     def view_pop(view):
         page.views.pop()
-        top_view = page.views[-1]
-        page.go(top_view.route)
-
-    page.on_view_pop = view_pop
+        if len(page.views) > 0:
+            top_view = page.views[-1]
+            page.go(top_view.route)
+        else:
+            page.go("/")
 
     def route_change(e):
         route = page.route
@@ -30,15 +31,11 @@ def main(page: ft.Page):
             page.views.append(PaoPageView(page))
         elif route == "/eximport":
             page.views.append(ExImportView(page))
-        else:
-            page.views.append(HomeView(page))
+        # else:
+        #     page.views.append(HomeView(page))
 
         page.update()
 
-    def view_pop(view):
-        page.views.pop()
-        top_view = page.views[-1]
-        page.go(top_view.route)
 
     page.on_route_change = route_change
     page.on_view_pop = view_pop
