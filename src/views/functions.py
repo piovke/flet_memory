@@ -7,7 +7,7 @@ BIRTHDAY_KEY = "birthdays"
 
 # if word doesnt exists adds it
 def add_pao(page, digit_pair, pao, text):
-    if not digit_pair:
+    if not digit_pair or len(digit_pair)!=2:
         return None
 
     data = load_data(page, PAO_KEY)
