@@ -25,12 +25,12 @@ def ExImportView(page):
         if hasattr(page, 'client_storage') and page.client_storage:
             page.client_storage.set(key, data)
 
-    # --- OBSŁUGA FILE PICKERA ---
+    # --- OBSŁUGA IMPORTU (Wczytywanie pliku) ---
     def on_dialog_result(e):
         operation = current_action["operation"]
         key = current_action["key"]
 
-        if not e.files and not e.path:
+        if not e.files:
             return
 
         try:
@@ -44,22 +44,13 @@ def ExImportView(page):
                 page.snack_bar = ft.SnackBar(ft.Text(f"Sukces! Zaimportowano dane."), bgcolor="green")
                 page.snack_bar.open = True
 
-            elif operation == "export" and e.path:
-                data = get_data_from_storage(key)
-
-                with open(e.path, 'w', encoding='utf-8') as f:
-                    json.dump(data, f, ensure_ascii=False, indent=4)
-
-                page.snack_bar = ft.SnackBar(ft.Text(f"Sukces! Zapisano w: {e.path}"), bgcolor="green")
-                page.snack_bar.open = True
-
         except Exception as ex:
             page.snack_bar = ft.SnackBar(ft.Text(f"Błąd: {ex}"), bgcolor="red")
             page.snack_bar.open = True
 
         page.update()
 
-    # Tworzenie FilePickera
+    # Tworzenie FilePickera (tylko do importu)
     file_picker = ft.FilePicker()
     file_picker.on_result = on_dialog_result
 
@@ -68,19 +59,27 @@ def ExImportView(page):
 
     # --- FUNKCJE PRZYCISKÓW ---
 
-    def click_export(e):
+    def click_copy_to_clipboard(e):
         key_alias = e.control.data
         storage_key = KEY_MAPPING.get(key_alias)
 
         if storage_key:
-            current_action["operation"] = "export"
-            current_action["key"] = storage_key
+            # 1. Pobierz dane
+            data = get_data_from_storage(storage_key)
 
-            file_picker.save_file(
-                dialog_title=f"Eksportuj {key_alias.upper()}",
-                file_name=f"{key_alias}_backup.json",
-                allowed_extensions=["json"]
+            # 2. Zamień na tekst (JSON)
+            json_text = json.dumps(data, ensure_ascii=False, indent=4)
+
+            # 3. Wrzuć do schowka systemowego
+            page.set_clipboard(json_text)
+
+            # 4. Pokaż komunikat
+            page.snack_bar = ft.SnackBar(
+                ft.Text(f"Skopiowano {key_alias.upper()}! Wklej to teraz do maila lub notatnika."),
+                bgcolor="orange"
             )
+            page.snack_bar.open = True
+            page.update()
 
     def click_import(e):
         key_alias = e.control.data
@@ -97,22 +96,22 @@ def ExImportView(page):
             )
 
     # --- UI ---
-    def create_row(title, key_alias, bg_color_str):
+    def create_row(title, key_alias):
         return ft.Container(
             content=ft.Row([
-                ft.Text(title, size=20, width=90),
+                ft.Text(title, size=20, width=120),
+
+                # PRZYCISK 1: KOPIUJ (Zamiast Eksport)
                 ft.ElevatedButton(
-                    "Eksport",
-                    # POPRAWKA: Używamy zwykłego tekstu dla ikony
-                    icon="upload",
+                    "Kopiuj",  # Zmieniona nazwa
+                    icon="copy",  # Zmieniona ikona
                     data=key_alias,
-                    on_click=click_export,
-                    bgcolor="green100",
+                    on_click=click_copy_to_clipboard,  # Nowa funkcja
+                    bgcolor="orange100",
                     color="black"
                 ),
                 ft.ElevatedButton(
-                    "Import",
-                    # POPRAWKA: Używamy zwykłego tekstu dla ikony
+                    "Wczytaj",
                     icon="download",
                     data=key_alias,
                     on_click=click_import,
@@ -121,24 +120,26 @@ def ExImportView(page):
                 ),
             ], alignment=ft.MainAxisAlignment.SPACE_BETWEEN),
             padding=15,
-            bgcolor=bg_color_str,
-            border_radius=10
+            border_radius=10,
+            bgcolor="#212121"
         )
 
     return ft.View(
         route="/eximport",
         controls=[
-            ft.AppBar(title=ft.Text("Eksport / Import"), bgcolor="blue"),
+            ft.AppBar(title=ft.Text("Kopia Zapasowa"), bgcolor="blue"),
 
             ft.Column([
-                create_row("PAO", "pao", "amber50"),
-                create_row("Grupy", "groups", "amber50"),
-                create_row("Urodziny", "birthdays", "amber50"),
-            ], spacing=15),
+                create_row("PAO", "pao"),
+                create_row("Grupy 00-99", "groups"),
+                create_row("Urodziny", "birthdays"),
+            ], spacing=20),
+
+            ft.Divider(),
 
             ft.Container(height=20),
             ft.FilledButton("Wróć do Menu", on_click=lambda _: page.go("/"), width=200)
         ],
-        vertical_alignment=ft.MainAxisAlignment.CENTER,
+        vertical_alignment=ft.MainAxisAlignment.SPACE_BETWEEN,
         horizontal_alignment=ft.CrossAxisAlignment.CENTER
     )
