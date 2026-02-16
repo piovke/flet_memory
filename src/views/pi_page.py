@@ -24,17 +24,6 @@ def PiPageView(page):
             dlg.open = False
             page.update()
 
-        # if word doesnt exists adds it
-        def add_pao(digit_pair, pao, text):
-            data = load_data(page, PAO_KEY)
-
-            if digit_pair not in data:
-                data[digit_pair] = {"P": [], "A": [], "O": []}
-
-            if text not in data[digit_pair][pao] and text != "":
-                data[digit_pair][pao].append(text)
-                save_data(page, PAO_KEY, data)
-
         def save_click(e):
             groups_data[key] = {
                 "digits": chunk_digits,
@@ -45,9 +34,9 @@ def PiPageView(page):
             save_data(page, GROUPS_KEY, groups_data)
 
             # save words to major dictionary
-            add_pao(str(chunk_digits[0:2]), "P", txt_p.value)
-            add_pao(str(chunk_digits[2:4]), "A", txt_a.value)
-            add_pao(str(chunk_digits[4:6]), "O", txt_o.value)
+            add_pao(page, str(chunk_digits[0:2]), "P", txt_p.value)
+            add_pao(page, str(chunk_digits[2:4]), "A", txt_a.value)
+            add_pao(page, str(chunk_digits[4:6]), "O", txt_o.value)
 
             close_dlg(e)
 
@@ -61,8 +50,13 @@ def PiPageView(page):
                 txt_o
             ], height=300, tight=True),
             actions=[
-                ft.TextButton("Anuluj", on_click=close_dlg),
-                ft.FilledButton("Zapisz", on_click=save_click)
+                ft.Row(
+                    controls=[
+                        ft.TextButton("Anuluj", on_click=close_dlg),
+                        ft.FilledButton("Zapisz", on_click=save_click)
+                    ],
+                    alignment=ft.MainAxisAlignment.SPACE_BETWEEN
+                ),
             ],
         )
         page.overlay.clear()
@@ -79,8 +73,8 @@ def PiPageView(page):
 
         for i, chunk in enumerate(chunks):
             key = str(i)
-            is_described = key in groups_data
             chunk_data = groups_data.get(key, {})
+            is_described = key in groups_data
 
             if state["show_text"]:
                 digits_display = f"{chunk[0:2]}  {chunk[2:4]}  {chunk[4:6]}"
