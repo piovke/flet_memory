@@ -161,5 +161,6 @@ cython_debug/
 
 # Flet
 #storage/
-
+groups.json
+pao.json
 vcs
