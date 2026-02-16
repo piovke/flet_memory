@@ -9,7 +9,8 @@ def HomeView(page):
                 content=ft.Column([
                     ft.Text("pamietaj", size=30),
                     ft.FilledButton("PiPamietaj", on_click=lambda _: page.go("/pi")),
-                    ft.FilledButton("Birthdays", on_click=lambda _: page.go("/eximport")),
+                    ft.FilledButton("PAO", on_click=lambda _: page.go("/pao")),
+                    ft.FilledButton("Dates", on_click=lambda _: page.go("/dates")),
                     ft.FilledButton("export/import", on_click=lambda _: page.go("/eximport")),
                 ]),
                 alignment=ft.Alignment(0, 0),
