@@ -109,7 +109,8 @@ def PaoPageView(page):
                             controls=[
                                 ft.IconButton(
                                     icon="add",
-                                    bgcolor="blue"
+                                    bgcolor="blue",
+                                    on_click=lambda e: open_add_pao_dialog(pair)
                                 )
                             ],
                             alignment=ft.MainAxisAlignment.END,
@@ -123,8 +124,7 @@ def PaoPageView(page):
             dismissible=True,
             enable_drag=True,
         )
-
-        # --- Przypisanie i otwarcie panelu ---
+        #open panel
         page.bottom_sheet = bs
         bs.open = True
         page.update()
@@ -135,19 +135,7 @@ def PaoPageView(page):
             page.update()
 
         def save_click(e):
-            # groups_data[key] = {
-            #     "digits": chunk_digits,
-            #     "P": txt_p.value,
-            #     "A": txt_a.value,
-            #     "O": txt_o.value
-            # }
-            # save_data(page, GROUPS_KEY, groups_data)
-            #
-            # # save words to major dictionary
-            # add_pao(page, str(chunk_digits[0:2]), "P", txt_p.value)
-            # add_pao(page, str(chunk_digits[2:4]), "A", txt_a.value)
-            # add_pao(page, str(chunk_digits[4:6]), "O", txt_o.value)
-
+            add_pao(page, pair, list(category_selector.selected)[0], word_text.value)
             close_dlg(e)
 
         category_selector = ft.SegmentedButton(
@@ -170,14 +158,17 @@ def PaoPageView(page):
             selected={"A"},
         )
 
+        pair_text = ft.TextField(label="Pair", value=pair)
+        word_text = ft.TextField(label="Word", value="")
+
         dlg = ft.AlertDialog(
             modal=True,
             title=ft.Text(rf"Add word"),
             content=ft.Column([
-                ft.TextField(label="Pair", value=pair),
+                pair_text,
                 category_selector,
-                ft.TextField(label="Word", value=""),
-            ], height=300, tight=True),
+                word_text,
+            ], height=200, tight=True),
             actions=[
                 ft.Row(
                     controls=[
@@ -203,13 +194,13 @@ def PaoPageView(page):
                     content=ft.Text(val, size=20),
                     height=35,
                     # Lambda z domknięciem zmiennej
-                    on_click=lambda e, pair=val: open_bottom_sheet(pair)
+                    on_click=lambda e, pair=val: open_bottom_sheet(pair),
+                    width=80
                 )
                 row.controls.append(btn)
             rows_of_buttons.controls.append(row)
 
     create_button_list()
-    open_add_pao_dialog("00")
 
     return ft.View(
         route="/pao",
@@ -224,6 +215,7 @@ def PaoPageView(page):
                     ft.IconButton(
                         icon="add",
                         bgcolor="blue",
+                        on_click=lambda e: open_add_pao_dialog("")
                     )
                 ],
                 alignment=MainAxisAlignment.END,
