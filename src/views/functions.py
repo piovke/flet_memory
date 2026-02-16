@@ -5,8 +5,21 @@ GROUPS_KEY = "groups"
 PAO_KEY = "pao"
 BIRTHDAY_KEY = "birthdays"
 
-# funkcje próbują  client_storage(android) i  json (windows)
+# if word doesnt exists adds it
+def add_pao(page, digit_pair, pao, text):
+    if not digit_pair:
+        return None
 
+    data = load_data(page, PAO_KEY)
+
+    if digit_pair not in data:
+        data[digit_pair] = {"P": [], "A": [], "O": []}
+
+    if text not in data[digit_pair][pao] and text != "":
+        data[digit_pair][pao].append(text)
+        save_data(page, PAO_KEY, data)
+
+# funkcje próbują  client_storage(android) i  json (windows)
 def load_data(page, key):
     try:
         if hasattr(page, 'client_storage') and page.client_storage:
