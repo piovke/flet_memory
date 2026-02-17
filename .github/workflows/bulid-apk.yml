@@ -41,7 +41,7 @@ jobs:
     - name: Flet Build APK
       run: |
         # Budujemy aplikację z folderu src
-        flet build apk ./src --product "PiPamietaj" --org "com.piovke.PiPamietaj"
+        flet build apk ./src
 
     # --- KROK DIAGNOSTYCZNY ---
     # Pokaże w logach, gdzie dokładnie wylądował plik
