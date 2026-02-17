@@ -6,7 +6,7 @@ from views.eximport import ExImportView
 
 
 def main(page: ft.Page):
-    page.title = "Memory Master"
+    page.title = "PiPamietaj"
     page.window_width = 400
     page.window_height = 750
     page.window_resizable = False
