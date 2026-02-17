@@ -134,11 +134,6 @@ def ExImportView(page):
                 create_row("Grupy 00-99", "groups"),
                 create_row("Urodziny", "birthdays"),
             ], spacing=20),
-
-            ft.Divider(),
-
-            ft.Container(height=20),
-            ft.FilledButton("Wróć do Menu", on_click=lambda _: page.go("/"), width=200)
         ],
         vertical_alignment=ft.MainAxisAlignment.SPACE_BETWEEN,
         horizontal_alignment=ft.CrossAxisAlignment.CENTER
