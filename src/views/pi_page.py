@@ -15,10 +15,46 @@ def PiPageView(page):
     def open_edit_dialog(index, chunk_digits):
         key = str(index)
         current_data = groups_data.get(key, {})
+        digits_p = chunk_digits[0:2]
+        digits_a = chunk_digits[2:4]
+        digits_o = chunk_digits[4:6]
 
-        txt_p = ft.TextField(label="Person", value=current_data.get("P", ""))
-        txt_a = ft.TextField(label="Action", value=current_data.get("A", ""))
-        txt_o = ft.TextField(label="Object", value=current_data.get("O", ""))
+        txt_p = ft.TextField(label=f"Person ({digits_p})", value=current_data.get("P", ""))
+        txt_a = ft.TextField(label=f"Action ({digits_a})", value=current_data.get("A", ""))
+        txt_o = ft.TextField(label=f"Object ({digits_o})", value=current_data.get("O", ""))
+
+        def suggest_pao_word(pair, pao, textfield):
+            # lists of suggestions
+            suggestions = get_pao_suggestions(page, pair, pao)
+
+            def use_suggestion(e):
+                textfield.value = e.control.label.value
+                page.update()
+
+            suggestions_row = ft.Row(
+                controls=[],
+                wrap=False,
+                scroll=ft.ScrollMode.HIDDEN,
+                spacing=5,
+                height=50,
+                vertical_alignment=ft.CrossAxisAlignment.START
+            )
+
+            if len(suggestions) == 0:
+                pao_string = "Action" if pao == "A" else "Person" if pao == "P" else "Object"
+                suggestions_row.controls.append(
+                    ft.Text(f"No {pao_string} for digits {pair}", size=12, color="grey")
+                )
+            else:
+                for suggestion in suggestions:
+                    suggestions_row.controls.append(
+                        ft.Chip(
+                            label=ft.Text(suggestion, size=12),
+                            on_click=use_suggestion,
+                            height=32,
+                        )
+                    )
+            return suggestions_row
 
         def close_dlg(e):
             dlg.open = False
@@ -34,9 +70,9 @@ def PiPageView(page):
             save_data(page, GROUPS_KEY, groups_data)
 
             # save words to major dictionary
-            add_pao(page, str(chunk_digits[0:2]), "P", txt_p.value)
-            add_pao(page, str(chunk_digits[2:4]), "A", txt_a.value)
-            add_pao(page, str(chunk_digits[4:6]), "O", txt_o.value)
+            add_pao(page, str(digits_p), "P", txt_p.value)
+            add_pao(page, str(digits_a), "A", txt_a.value)
+            add_pao(page, str(digits_o), "O", txt_o.value)
 
             render_list(run_update=True)
             close_dlg(e)
@@ -46,9 +82,12 @@ def PiPageView(page):
             title=ft.Text(rf"Group {index}:   {chunk_digits}"),
             content=ft.Column([
                 txt_p,
+                suggest_pao_word(digits_p, "P", txt_p),
                 txt_a,
-                txt_o
-            ], height=300, tight=True),
+                suggest_pao_word(digits_a, "A", txt_a),
+                txt_o,
+                suggest_pao_word(digits_o, "O", txt_o),
+            ], height=380, tight=True),
             actions=[
                 ft.Row(
                     controls=[
@@ -131,7 +170,6 @@ def PiPageView(page):
                 ]
             ),
             list_view,
-            ft.FilledButton("Wróć", on_click=lambda _: page.go("/")),
         ],
         vertical_alignment=ft.MainAxisAlignment.CENTER,
         horizontal_alignment=ft.CrossAxisAlignment.CENTER

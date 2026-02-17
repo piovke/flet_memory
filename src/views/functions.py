@@ -65,3 +65,16 @@ def save_data(page, key, data):
             json.dump(data, f, ensure_ascii=False, indent=4)
     except Exception:
         pass
+
+
+def get_pao_suggestions(page, digit_pair, pao):
+    if not digit_pair or len(digit_pair)!=2:
+        return []
+
+    data = load_data(page, PAO_KEY)
+
+    if digit_pair not in data:
+        return []
+
+    words_list = data[digit_pair].get(pao, [])
+    return words_list
