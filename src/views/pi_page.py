@@ -54,13 +54,15 @@ def PiPageView(page):
             page.update()
 
         def save_click(e):
-            groups_data[key] = {
-                "digits": chunk_digits,
-                "P": txt_p.value.strip(),
-                "A": txt_a.value.strip(),
-                "O": txt_o.value.strip()
-            }
-            save_data(page, GROUPS_KEY, groups_data)
+            if txt_p.value or txt_o.value or txt_a.value:
+                groups_data[key] = {
+                    "digits": chunk_digits,
+                    "P": txt_p.value.strip(),
+                    "A": txt_a.value.strip(),
+                    "O": txt_o.value.strip()
+                }
+
+                save_data(page, GROUPS_KEY, groups_data)
 
             def format_text(text):
                 result = text
