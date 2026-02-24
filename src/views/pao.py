@@ -85,6 +85,7 @@ def PaoPageView(page):
         # Definicja BottomSheet
         bs = ft.BottomSheet(
             ft.Container(
+                height=490,
                 padding=20,
                 content=ft.Column(
                     [
@@ -107,7 +108,11 @@ def PaoPageView(page):
                         ft.Text(f"Object:"),
                         list_o,
 
-                        ft.Container(height=20),
+                        ft.Container(
+                            content=ft.Text("tap word to delete", color=ft.colors.GREY_500),
+                            expand=True,
+                            alignment=ft.alignment.bottom_center
+                        ),
 
                         ft.Row(
                             controls=[
@@ -118,15 +123,14 @@ def PaoPageView(page):
                                 )
                             ],
                             alignment=ft.MainAxisAlignment.END,
-                            vertical_alignment=ft.CrossAxisAlignment.END,
-                            expand=True
                         )
                     ],
                     tight=False,
-                )
+                ),
             ),
             dismissible=True,
             enable_drag=True,
+            is_scroll_controlled=True
         )
         #open panel
         page.bottom_sheet = bs
