@@ -29,7 +29,21 @@ def load_settings(page):
     return settings
 
 def SettingsView(page):
-    settings = load_data(page, SETTINGS_KEY)
+    settings = load_settings(page)
+
+    def change_settings(key, value):
+        settings[key] = value
+        save_data(page, SETTINGS_KEY, settings)
+
+    def settings_switch(key, text):
+        switch = ft.Row(
+                    controls=[
+                        ft.Switch(value=settings[key], on_change=lambda e:change_settings(key, e.control.value)),
+                        ft.Text(text, expand=True),
+                    ]
+                )
+        return switch
+
 
     return ft.View(
         route="/settings",
@@ -38,6 +52,9 @@ def SettingsView(page):
             ft.Container(
                 content=ft.Column([
                     ft.Text("", size=30),
+                    settings_switch("hide_suggestions_on_keyboard", "Hide suggestions while keyboard is open in editing groups."),
+                    settings_switch("show_help", "Show help in groups (number - letters)."),
+                    settings_switch("ignore_parentheses", "Ignore parentheses while adding to groups. 'sitting (in)' gets saved in pao as only 'sitting'"),
                 ]),
                 alignment=ft.Alignment(0, 0),
                 expand=True
