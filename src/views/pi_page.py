@@ -98,10 +98,12 @@ def PiPageView(page):
 
         def swipe(e: ft.DragEndEvent):
             if e.primary_velocity < -100:
-                open_edit_dialog(index+1, chunks[index+1])
+                if index<len(cyfry)/6:
+                    open_edit_dialog(index+1, chunks[index+1])
 
             elif e.primary_velocity > 100:
-                open_edit_dialog(index+1, chunks[index+1])
+                if index>0:
+                    open_edit_dialog(index-1, chunks[index-1])
 
 #####################################################
         key = str(index)
