@@ -6,6 +6,7 @@ def load_settings(page):
     default_settings = {
         "ignore_parentheses": True,
         "show_help": True,
+        "show_text": False,
         "hide_suggestions_on_keyboard": False,
 
         "letters": {

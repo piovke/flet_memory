@@ -10,8 +10,6 @@ def PiPageView(page):
     groups_data = load_data(page, GROUPS_KEY)
     settings = load_settings(page)
 
-    state={"show_text": False}
-
     chunks = [cyfry[i:i + 6] for i in range(0, len(cyfry), 6)]
     list_view = ft.ListView(expand=True, spacing=10, padding=20)
 
@@ -142,8 +140,9 @@ def PiPageView(page):
         page.update()
 
     def toggle_mode(e):
-        state["show_text"] = e.control.value
+        settings["show_text"] = e.control.value
         render_list(run_update=True)
+        save_data(page, SETTINGS_KEY, settings)
 
     def render_list(run_update):
         new_controls =[]
@@ -153,7 +152,7 @@ def PiPageView(page):
             chunk_data = groups_data.get(key, {})
             is_described = key in groups_data
 
-            if state["show_text"]:
+            if settings["show_text"]:
                 digits_display = f"{chunk[0:2]}  {chunk[2:4]}  {chunk[4:6]}"
                 p = chunk_data.get("P", "")
                 a = chunk_data.get("A", "")
@@ -202,7 +201,7 @@ def PiPageView(page):
                 actions=[
                     ft.Row([
                         ft.Text("Tekst", color="white"),
-                        ft.Switch(value=False, on_change=toggle_mode, active_color="white", active_track_color="green"),
+                        ft.Switch(value=settings["show_text"], on_change=toggle_mode, active_color="white", active_track_color="green"),
                         ft.Container(width=10)
                     ])
                 ]
