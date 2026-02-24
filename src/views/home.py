@@ -11,6 +11,7 @@ def HomeView(page):
                     ft.FilledButton("PiPamietaj", on_click=lambda _: page.go("/pi"), width=400),
                     ft.FilledButton("PAO", on_click=lambda _: page.go("/pao"), width=400),
                     ft.FilledButton("Dates", on_click=lambda _: page.go("/dates"), width=400),
+                    ft.FilledButton("settings", on_click=lambda _: page.go("/settings"), width=400),
                     ft.FilledButton("export/import", on_click=lambda _: page.go("/eximport"), width=400),
                 ]),
                 alignment=ft.Alignment(0, 0),

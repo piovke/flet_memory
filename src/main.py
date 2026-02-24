@@ -3,6 +3,7 @@ from views.home import HomeView
 from views.pi_page import PiPageView
 from views.pao import PaoPageView
 from views.eximport import ExImportView
+from views.settings import SettingsView
 
 
 def main(page: ft.Page):
@@ -31,6 +32,8 @@ def main(page: ft.Page):
             page.views.append(PaoPageView(page))
         elif route == "/eximport":
             page.views.append(ExImportView(page))
+        elif route == "/settings":
+            page.views.append(SettingsView(page))
         # else:
         #     page.views.append(HomeView(page))
 

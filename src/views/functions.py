@@ -4,6 +4,7 @@ import os
 GROUPS_KEY = "groups"
 PAO_KEY = "pao"
 BIRTHDAY_KEY = "birthdays"
+SETTINGS_KEY = "settings"
 
 # if word doesnt exists adds it
 def add_pao(page, digit_pair, pao, text):
