@@ -52,15 +52,13 @@ def PiPageView(page):
             page.update()
 
         def save_click(e):
-            if txt_p.value or txt_o.value or txt_a.value:
-                groups_data[key] = {
-                    "digits": chunk_digits,
-                    "P": txt_p.value.strip(),
-                    "A": txt_a.value.strip(),
-                    "O": txt_o.value.strip()
-                }
-
-                save_data(page, GROUPS_KEY, groups_data)
+            groups_data[key] = {
+                "digits": chunk_digits,
+                "P": txt_p.value.strip(),
+                "A": txt_a.value.strip(),
+                "O": txt_o.value.strip()
+            }
+            save_data(page, GROUPS_KEY, groups_data)
 
             def format_text(text):
                 result = text
@@ -162,7 +160,7 @@ def PiPageView(page):
         for i, chunk in enumerate(chunks):
             key = str(i)
             chunk_data = groups_data.get(key, {})
-            is_described = key in groups_data
+            is_described = not (0 == len(chunk_data["P"]) + len(chunk_data["A"]) + len(chunk_data["O"])) if chunk_data else False
 
             if settings["show_text"]:
                 digits_display = f"{chunk[0:2]}  {chunk[2:4]}  {chunk[4:6]}"
