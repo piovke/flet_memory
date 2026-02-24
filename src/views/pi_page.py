@@ -186,7 +186,7 @@ def PiPageView(page):
                 style=ft.ButtonStyle(
                     shape=ft.RoundedRectangleBorder(radius=10),
                     side=ft.BorderSide(2, ft.colors.GREEN if is_described else ft.colors.GREY_500),
-                    padding=ft.padding.only(left=12, top=12, right=12, bottom=16)
+                    padding=ft.padding.only(left=12, top=6, right=12, bottom=9)
                 ),
                 on_click=lambda e, idx=i, ch=chunk: open_edit_dialog(index=idx, chunk_digits=ch)
             )
