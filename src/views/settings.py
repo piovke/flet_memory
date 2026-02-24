@@ -6,7 +6,21 @@ def load_settings(page):
     default_settings = {
         "ignore_parentheses": True,
         "show_help": True,
-        "hide_suggestions_on_keyboard": False
+        "hide_suggestions_on_keyboard": False,
+
+        "letters": {
+            "0": "z s",
+            "1": "j dż",
+            "2": "d t",
+            "3": "w f",
+            "4": "cz r",
+            "5": "l ł",
+            "6": "sz ż",
+            "7": "m n",
+            "8": "g k",
+            "9": "p b",
+        }
+
     }
     saved_settings = load_data(page, SETTINGS_KEY)
     settings = default_settings.copy()

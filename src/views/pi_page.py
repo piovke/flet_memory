@@ -89,6 +89,14 @@ def PiPageView(page):
         def show_suggestions(e):
             toggle_suggestion_visibility(True)
 
+        def show_help(digits):
+            if settings.get("show_help", False):
+                dig1 = settings.get("letters").get(digits[0])
+                dig2 = settings.get("letters").get(digits[1])
+                return f"{digits} ({dig1} | {dig2})"
+            return f"({digits})"
+
+
 #####################################################
         key = str(index)
         current_data = groups_data.get(key, {})
@@ -96,9 +104,9 @@ def PiPageView(page):
         digits_a = chunk_digits[2:4]
         digits_o = chunk_digits[4:6]
 
-        txt_p = ft.TextField(label=f"Person ({digits_p})", value=current_data.get("P", ""), on_focus=hide_suggestions, on_blur=show_suggestions)
-        txt_a = ft.TextField(label=f"Action ({digits_a})", value=current_data.get("A", ""), on_focus=hide_suggestions, on_blur=show_suggestions)
-        txt_o = ft.TextField(label=f"Object ({digits_o})", value=current_data.get("O", ""), on_focus=hide_suggestions, on_blur=show_suggestions)
+        txt_p = ft.TextField(label=f"Person {show_help(digits_p)}", value=current_data.get("P", ""), on_focus=hide_suggestions, on_blur=show_suggestions)
+        txt_a = ft.TextField(label=f"Action {show_help(digits_a)}", value=current_data.get("A", ""), on_focus=hide_suggestions, on_blur=show_suggestions)
+        txt_o = ft.TextField(label=f"Object {show_help(digits_o)}", value=current_data.get("O", ""), on_focus=hide_suggestions, on_blur=show_suggestions)
 
         sugg_p = suggest_pao_word(digits_p, "P", txt_p)
         sugg_a = suggest_pao_word(digits_a, "A", txt_a)
