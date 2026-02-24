@@ -16,16 +16,6 @@ def PiPageView(page):
     list_view = ft.ListView(expand=True, spacing=10, padding=20)
 
     def open_edit_dialog(index, chunk_digits):
-        key = str(index)
-        current_data = groups_data.get(key, {})
-        digits_p = chunk_digits[0:2]
-        digits_a = chunk_digits[2:4]
-        digits_o = chunk_digits[4:6]
-
-        txt_p = ft.TextField(label=f"Person ({digits_p})", value=current_data.get("P", ""))
-        txt_a = ft.TextField(label=f"Action ({digits_a})", value=current_data.get("A", ""))
-        txt_o = ft.TextField(label=f"Object ({digits_o})", value=current_data.get("O", ""))
-
         def suggest_pao_word(pair, pao, textfield):
             # lists of suggestions
             suggestions = get_pao_suggestions(page, pair, pao)
@@ -86,16 +76,45 @@ def PiPageView(page):
             render_list(run_update=True)
             close_dlg(e)
 
+        def toggle_suggestion_visibility(visibility):
+            if settings.get("hide_suggestions_on_keyboard", False):
+                sugg_p.visible = visibility
+                sugg_a.visible = visibility
+                sugg_o.visible = visibility
+                dlg.update()
+
+        def hide_suggestions(e):
+            toggle_suggestion_visibility(False)
+
+        def show_suggestions(e):
+            toggle_suggestion_visibility(True)
+
+#####################################################
+        key = str(index)
+        current_data = groups_data.get(key, {})
+        digits_p = chunk_digits[0:2]
+        digits_a = chunk_digits[2:4]
+        digits_o = chunk_digits[4:6]
+
+        txt_p = ft.TextField(label=f"Person ({digits_p})", value=current_data.get("P", ""), on_focus=hide_suggestions, on_blur=show_suggestions)
+        txt_a = ft.TextField(label=f"Action ({digits_a})", value=current_data.get("A", ""), on_focus=hide_suggestions, on_blur=show_suggestions)
+        txt_o = ft.TextField(label=f"Object ({digits_o})", value=current_data.get("O", ""), on_focus=hide_suggestions, on_blur=show_suggestions)
+
+        sugg_p = suggest_pao_word(digits_p, "P", txt_p)
+        sugg_a = suggest_pao_word(digits_a, "A", txt_a)
+        sugg_o = suggest_pao_word(digits_o, "O", txt_o)
+
+
         dlg = ft.AlertDialog(
             modal=True,
             title=ft.Text(rf"Group {index}:   {chunk_digits}"),
             content=ft.Column([
                 txt_p,
-                suggest_pao_word(digits_p, "P", txt_p),
+                sugg_p,
                 txt_a,
-                suggest_pao_word(digits_a, "A", txt_a),
+                sugg_a,
                 txt_o,
-                suggest_pao_word(digits_o, "O", txt_o),
+                sugg_o
             ], height=380, tight=True),
             actions=[
                 ft.Row(
