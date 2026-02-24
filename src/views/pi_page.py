@@ -171,26 +171,22 @@ def PiPageView(page):
 
                 btn_content = ft.Column([
                     ft.Row([
-                        ft.Text(digits_display, size=16, weight=ft.FontWeight.BOLD, color=ft.colors.GREY_500,)
-                    ], alignment=ft.MainAxisAlignment.CENTER, height=18),
-                    # ft.Row([
-                    ft.Text(words_display, size=20, color=ft.colors.BLUE_800, text_align=ft.TextAlign.CENTER)
-                    # ], height=62)
-                ])
-
-                btn_height = 80
-
+                        ft.Text(digits_display, size=16, weight=ft.FontWeight.BOLD, color=ft.colors.GREY_500)
+                    ], alignment=ft.MainAxisAlignment.CENTER),
+                    ft.Text(words_display, size=20, color=ft.colors.BLUE_800, text_align=ft.TextAlign.CENTER),
+                ], spacing=0, horizontal_alignment=ft.CrossAxisAlignment.CENTER)
             else:
-                btn_content= ft.Text(chunk, size=20, weight=ft.FontWeight.W_600)
-                btn_height = 40
+                btn_content = ft.Container(
+                    content=ft.Text(chunk, size=20, weight=ft.FontWeight.W_600, text_align=ft.TextAlign.CENTER),
+                    alignment=ft.alignment.center
+                )
 
             btn = ft.OutlinedButton(
                 content=btn_content,
-                height=btn_height,
                 style=ft.ButtonStyle(
                     shape=ft.RoundedRectangleBorder(radius=10),
                     side=ft.BorderSide(2, ft.colors.GREEN if is_described else ft.colors.GREY_500),
-                    padding=8,
+                    padding=ft.padding.only(left=12, top=12, right=12, bottom=16)
                 ),
                 on_click=lambda e, idx=i, ch=chunk: open_edit_dialog(index=idx, chunk_digits=ch)
             )
