@@ -96,6 +96,12 @@ def PiPageView(page):
                 return f"{digits} ({dig1} | {dig2})"
             return f"({digits})"
 
+        def swipe(e: ft.DragEndEvent):
+            if e.primary_velocity < -100:
+                open_edit_dialog(index+1, chunks[index+1])
+
+            elif e.primary_velocity > 100:
+                open_edit_dialog(index+1, chunks[index+1])
 
 #####################################################
         key = str(index)
@@ -112,10 +118,8 @@ def PiPageView(page):
         sugg_a = suggest_pao_word(digits_a, "A", txt_a)
         sugg_o = suggest_pao_word(digits_o, "O", txt_o)
 
-
-        dlg = ft.AlertDialog(
-            modal=True,
-            title=ft.Text(rf"Group {index}:   {chunk_digits}"),
+        alert_content = ft.GestureDetector(
+            on_horizontal_drag_end = swipe,
             content=ft.Column([
                 txt_p,
                 sugg_p,
@@ -123,7 +127,13 @@ def PiPageView(page):
                 sugg_a,
                 txt_o,
                 sugg_o
-            ], height=380, tight=True),
+            ], height=380, tight=True)
+        )
+
+        dlg = ft.AlertDialog(
+            modal=True,
+            title=ft.Text(rf"Group {index}:   {chunk_digits}"),
+            content=alert_content,
             actions=[
                 ft.Row(
                     controls=[
